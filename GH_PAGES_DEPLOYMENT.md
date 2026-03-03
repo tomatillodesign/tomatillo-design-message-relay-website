@@ -50,16 +50,47 @@ After deployment completes:
 - Test mobile + desktop layout.
 - Confirm no missing CSS (unstyled page usually means wrong path or file missing from root).
 
-## 4) Optional custom domain
+## 4) Connect custom domain (`message-relay.org`)
 
-If you want this available on a custom domain/subdomain:
+Use these exact settings to point your domain at GitHub Pages.
 
-1. In **Settings** -> **Pages**, set **Custom domain**.
-2. Add DNS records at your DNS provider:
-   - `CNAME` for subdomain target to `<org-or-user>.github.io`
-   - or `A/AAAA` records for apex domain per GitHub docs
-3. Wait for DNS propagation.
-4. Enable **Enforce HTTPS** once available.
+### GitHub Pages settings
+
+1. In your repo, open **Settings** -> **Pages**.
+2. In **Custom domain**, enter:
+   - `message-relay.org`
+3. Click **Save**.
+4. Wait for GitHub to create/confirm the `CNAME` file in the published site.
+5. Enable **Enforce HTTPS** when it becomes available.
+
+### DNS records to add
+
+At your DNS provider, configure:
+
+- Apex/root domain (`message-relay.org`) as `A` records:
+  - `185.199.108.153`
+  - `185.199.109.153`
+  - `185.199.110.153`
+  - `185.199.111.153`
+- Optional IPv6 `AAAA` records (recommended):
+  - `2606:50c0:8000::153`
+  - `2606:50c0:8001::153`
+  - `2606:50c0:8002::153`
+  - `2606:50c0:8003::153`
+- `www` host as `CNAME`:
+  - `www` -> `tomatillodesign.github.io`
+
+### Redirect behavior recommendation
+
+- Keep `message-relay.org` as the primary domain in GitHub Pages.
+- Keep `www.message-relay.org` DNS configured so GitHub can automatically redirect it to the primary domain.
+
+### Validation checklist
+
+- `dig message-relay.org +short` returns GitHub Pages IPs.
+- `dig www.message-relay.org +short` resolves via `tomatillodesign.github.io`.
+- `https://message-relay.org` loads over HTTPS without certificate warnings.
+- `https://www.message-relay.org` redirects to your configured primary domain.
 
 ## 5) Ongoing updates
 
@@ -78,4 +109,4 @@ Pages auto-redeploys after each push to the configured branch.
 - **404 page**: verify Pages source branch/folder is correct.
 - **No styles**: confirm `styles.css` is in repo root and linked as `./styles.css`.
 - **Old content still showing**: hard refresh browser and wait for Pages build completion.
-- **Custom domain not resolving**: validate DNS records and allow time to propagate.
+- **Custom domain not resolving**: check exact `A/AAAA/CNAME` values, remove conflicting records, and allow DNS propagation time.
